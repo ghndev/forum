@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/head :: head (회원가입)}"></div>
+<body>
+<div th:insert="~{fragments/nav :: nav}"></div>
+<div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-lg text-center">
+        <h1 class="text-2xl font-bold sm:text-3xl">회원가입</h1>
+    </div>
+
+    <form action="/signup" method="post" th:object="${signUpRequest}" class="mx-auto mt-8 mb-0 max-w-md space-y-4">
+        <div>
+            <label for="email" class="sr-only">Email</label>
+
+            <div class="relative">
+                <input
+                        th:field="*{email}"
+                        th:errorclass="border-red-500"
+                        id="email"
+                        name="email"
+                        type="email"
+                        class="w-full outline-none border-2 rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                        placeholder="이메일을 입력하세요"
+                />
+                <p th:errors="*{email}" class="text-red-600"></p>
+            </div>
+        </div>
+
+        <div>
+            <label for="username" class="sr-only">Email</label>
+
+            <div class="relative">
+                <input
+                        th:field="*{username}"
+                        th:errorclass="border-red-500"
+                        id="username"
+                        name="username"
+                        type="text"
+                        class="w-full outline-none border-2 rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                        placeholder="아이디를 입력하세요"
+                />
+                <p th:errors="*{username}" class="text-red-600"></p>
+            </div>
+        </div>
+
+        <div>
+            <label for="password" class="sr-only">Password</label>
+
+            <div class="relative">
+                <input
+                        th:field="*{password}"
+                        th:errorclass="border-red-500"
+                        id="password"
+                        name="password"
+                        type="password"
+                        class="w-full outline-none rounded-lg border-2 border-gray-200 p-4 pr-12 text-sm shadow-sm"
+                        value=""
+                        placeholder="비밀번호를 입력하세요"
+                />
+                <p th:errors="*{password}" class="text-red-600"></p>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-500">
+                이미 가입하셨나요?
+                <a class="underline" href="/login">로그인</a>
+            </p>
+
+            <button
+                    type="submit"
+                    class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white"
+            >
+                확인
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
