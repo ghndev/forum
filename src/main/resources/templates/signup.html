@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/head :: head (회원가입)}"></div>
+<body>
+<div th:insert="~{fragments/nav :: nav}"></div>
+<main class="w-full flex justify-center items-center">
+    <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-lg text-center">
+            <h1 class="text-2xl font-bold sm:text-3xl">회원가입</h1>
+        </div>
+
+        <form action="/signup" method="post" th:object="${signUpRequest}" class="w-[30rem] mt-10">
+            <div class="mb-6">
+                <label for="email" class="block mb-2 text-gray-900 font-bold">이메일</label>
+                <input
+                        th:field="*{email}"
+                        th:errorclass="border-red-500"
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="bg-gray-50 outline-none border-2 border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                />
+                <p th:errors="*{email}" class="text-red-500"></p>
+            </div>
+            <div class="mb-6">
+                <label for="username" class="block mb-2 text-gray-900 font-bold">아이디</label>
+                <input
+                        th:field="*{username}"
+                        th:errorclass="border-red-500"
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="bg-gray-50 outline-none border-2 border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                />
+                <p th:errors="*{username}" class="text-red-500"></p>
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block mb-2 text-gray-900 font-bold">비밀번호</label>
+                <input
+                        th:field="*{password}"
+                        th:errorclass="border-red-500"
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="bg-gray-50 outline-none border-2 border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                />
+                <p th:errors="*{password}" class="text-red-500"></p>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <div class="flex items-center text-gray-600">
+                    <p class="text-sm">계정이 이미 있으신가요?</p>
+                    <a href="/login" class="ml-1 underline text-sm">로그인</a>
+                </div>
+
+                <button
+                        type="submit"
+                        class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                >
+                    확인
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
