@@ -26,7 +26,7 @@ public class UserController {
     @PostMapping("/signup")
     public String createUser(@Validated @ModelAttribute SignUpRequest signUpRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "/signup";
+            return "signup";
         }
 
         userService.createUser(signUpRequest.toEntity());
