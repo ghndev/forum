@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/head :: head (로그인)}"></div>
+<body>
+<div th:insert="~{fragments/nav :: nav}"></div>
+<main class="w-full flex justify-center items-center">
+    <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-lg text-center">
+            <h1 class="text-2xl font-bold sm:text-3xl">로그인</h1>
+        </div>
+
+        <form
+                action="/login" method="post"
+                class="mx-auto mt-8 mb-0 space-y-4 w-[17rem] lg:w-[25rem]"
+        >
+            <div>
+                <div class="relative">
+                    <input
+                            type="email"
+                            name="email"
+                            class="w-full rounded-lg border-2 p-4 outline-none pr-12 text-sm shadow-sm"
+                            placeholder="이메일"
+                    />
+                </div>
+            </div>
+
+            <div>
+                <div class="relative">
+                    <input
+                            id="password-input"
+                            name="password"
+                            type="password"
+                            class="w-full rounded-lg border-2 outline-none p-4 pr-12 text-sm shadow-sm"
+                            placeholder="비밀번호"
+                    />
+                </div>
+            </div>
+            <p th:if="${param.failed}" class="text-red-500">이메일 또는 비밀번호가 일치하지 않습니다.</p>
+
+            <div class="flex items-center justify-between">
+                <p class="text-sm text-gray-500">
+                    계정이 없으신가요?
+                    <a class="underline" href="/signup">회원가입</a>
+                </p>
+
+                <button
+                        type="submit"
+                        class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white"
+                >
+                    확인
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

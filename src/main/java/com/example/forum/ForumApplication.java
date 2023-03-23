@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class ForumApplication {
@@ -17,11 +18,12 @@ public class ForumApplication {
 
 	@Bean
 	public CommandLineRunner runner(UserRepository userRepository) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		return args -> userRepository.save(
 				User.builder()
 						.email("test@test.com")
 						.username("test")
-						.password("password1")
+						.password(passwordEncoder.encode("password1"))
 						.role(Role.USER).build()
 		);
 	}

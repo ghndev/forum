@@ -21,8 +21,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/", "/signup").permitAll()
+                .authorizeRequests().antMatchers("/", "/signup", "/login").permitAll()
                 .anyRequest().authenticated();
+
+        http
+                .formLogin()
+                .loginPage("/login")
+                .usernameParameter("email")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?failed");
 
         return http.build();
     }

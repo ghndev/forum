@@ -32,4 +32,9 @@ public class UserController {
         userService.createUser(signUpRequest.toEntity());
         return "redirect:/login";
     }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }
