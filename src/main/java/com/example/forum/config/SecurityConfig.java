@@ -27,7 +27,6 @@ public class SecurityConfig {
         http
                 .formLogin()
                 .loginPage("/login")
-                .usernameParameter("email")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)
                 .failureUrl("/login?failed");

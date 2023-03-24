@@ -16,10 +16,10 @@
             <div>
                 <div class="relative">
                     <input
-                            type="email"
-                            name="email"
+                            type="text"
+                            name="username"
                             class="w-full rounded-lg border-2 p-4 outline-none pr-12 text-sm shadow-sm"
-                            placeholder="이메일"
+                            placeholder="아이디"
                     />
                 </div>
             </div>
@@ -35,7 +35,7 @@
                     />
                 </div>
             </div>
-            <p th:if="${param.failed}" class="text-red-500">이메일 또는 비밀번호가 일치하지 않습니다.</p>
+            <p th:if="${param.failed}" class="text-red-500">아이디 또는 비밀번호가 일치하지 않습니다.</p>
 
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-500">
