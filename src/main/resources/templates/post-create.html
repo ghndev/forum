@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:insert="~{fragments/head :: head (게시판)}"></div>
+<body>
+<script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+<div th:insert="~{fragments/nav :: nav}"></div>
+<div class="container max-w-3xl mx-auto mt-10 px-4">
+    <h1 class="text-3xl font-bold mb-4">글쓰기</h1>
+    <div class="bg-white p-4 border border-gray-200 rounded-lg">
+        <form action="/posts/create" method="post" th:object="${postCreateRequest}">
+            <div class="mb-4">
+                <label for="title" class="block text-sm font-bold mb-2">제목</label>
+                <input
+                        th:field="*{title}"
+                        type="text"
+                        id="title"
+                        name="title"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none"
+                        placeholder="제목을 입력하세요"
+                />
+                <p th:errors="*{title}" class="text-red-500"></p>
+            </div>
+            <div class="mb-4">
+                <label for="category" class="block text-sm font-bold mb-2"
+                >카테고리</label
+                >
+                <select
+                        id="category"
+                        name="category"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none"
+                >
+                    <option value="daily">일상</option>
+                    <option value="qna">Q&A</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="content" class="block text-sm font-bold mb-2"
+                >내용</label
+                >
+                <textarea th:field="*{content}" name="content" id="content" rows="10"></textarea>
+                <p th:errors="*{content}" class="text-red-500"></p>
+            </div>
+            <div class="flex justify-end">
+                <button
+                        type="submit"
+                        class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg"
+                >
+                    저장
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    CKEDITOR.replace("content");
+</script>
+</body>
+</html>

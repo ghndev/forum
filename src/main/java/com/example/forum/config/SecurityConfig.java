@@ -21,7 +21,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/", "/signup", "/login").permitAll()
+                .authorizeRequests()
+                .antMatchers("/posts/create").hasRole("USER")
+                .antMatchers("/", "/signup", "/login", "/posts/**").permitAll()
                 .anyRequest().authenticated();
 
         http

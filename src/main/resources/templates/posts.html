@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:insert="~{fragments/head :: head (게시판)}"></div>
+<body>
+<div th:insert="~{fragments/nav :: nav}"></div>
+<div class="container max-w-3xl mx-auto mt-10 p-1">
+    <div
+            class="w-full h-10 pl-3 pr-2 bg-white border rounded-full flex justify-between items-center relative"
+    >
+        <input
+                type="text"
+                name="search"
+                id="search"
+                placeholder="검색어를 입력하세요"
+                class="appearance-none w-full outline-none focus:outline-none active:outline-none"
+        />
+        <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
+            <svg
+                    class="text-gray-600 h-4 w-4 fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 56.966 56.966"
+            >
+                <path
+                        d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23 s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.982,2.162,1.051 c0.045,0.003,0.089,0.012,0.134,0.015l0.129,0.008c0.964,0.064,1.904-0.192,2.71-0.736C56.231,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17s-17-7.626-17-17S14.61,6,23.984,6z"
+                ></path>
+            </svg>
+        </button>
+    </div>
+</div>
+<div class="container max-w-3xl mx-auto mt-10 font-bold rounded-lg p-1">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <a
+                    href="/posts/create"
+                    class="text-gray-500 border-2 font-bold py-2 px-4 rounded-lg"
+            >
+                글쓰기
+            </a>
+        </div>
+        <div>
+            <a href="/posts"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/posts' ? 'text-blue-500' : 'text-gray-500'}"
+               class="hover:text-blue-500">전체</a>
+            <a href="/posts/daliy"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/posts/daily' ? 'text-blue-500' : 'text-gray-500'}"
+               class="mx-2 hover:text-blue-500">일상</a>
+            <a href="/qna"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/posts/qna' ? 'text-blue-500' : 'text-gray-500'}"
+               class="hover:text-blue-500">Q&A</a>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div class="relative" id="dropdown">
+                <button
+                        class="text-gray-500 border-2 font-bold py-2 px-4 rounded-lg"
+                >
+                    정렬
+                </button>
+                <div
+                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg p-2 hidden"
+                        id="dropdown-menu"
+                >
+                    <a
+                            href="#"
+                            class="block px-2 py-1 text-gray-500 hover:bg-gray-100"
+                    >최신순</a
+                    >
+                    <a
+                            href="#"
+                            class="block px-2 py-1 text-gray-500 hover:bg-gray-100"
+                    >좋아요순</a
+                    >
+                    <a
+                            href="#"
+                            class="block px-2 py-1 text-gray-500 hover:bg-gray-100"
+                    >조회순</a
+                    >
+                </div>
+            </div>
+        </div>
+        <script>
+            const dropdown = document.querySelector("#dropdown");
+            const dropdownMenu = document.querySelector("#dropdown-menu");
+
+            dropdown.addEventListener("click", function (event) {
+                event.stopPropagation();
+                dropdownMenu.classList.toggle("hidden");
+            });
+
+            document.addEventListener("click", function () {
+                if (!dropdownMenu.classList.contains("hidden")) {
+                    dropdownMenu.classList.add("hidden");
+                }
+            });
+        </script>
+    </div>
+    <div class="overflow-x-auto border rounded-lg">
+        <table
+                class="min-w-full divide-y divide-gray-200 shadow-lg rounded-lg overflow-hidden"
+        >
+            <thead class="bg-blue-500">
+            <tr>
+                <th
+                        class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider"
+                >
+                    제목
+                </th>
+                <th
+                        class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider"
+                >
+                    카테고리
+                </th>
+                <th
+                        class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider"
+                >
+                    작성자
+                </th>
+                <th
+                        class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider"
+                >
+                    날짜
+                </th>
+                <th
+                        class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider"
+                >
+                    조회수
+                </th>
+                <th
+                        class="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider"
+                >
+                    좋아요
+                </th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+            <tr th:each="post : ${postResponseList}">
+                <td
+                        th:text="${post.title}"
+                        class="px-6 py-4 w-[12rem] inline-block text-ellipsis overflow-hidden whitespace-nowrap text-sm text-blue-500 underline cursor-pointer"
+                >
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    미정
+                </td>
+                <td th:text="${post.author}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                </td>
+                <td th:text="${post.dateTime.toString().substring(0,10)}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                </td>
+                <td th:text="${post.views}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    0
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    document
+        .querySelector(".relative")
+        .addEventListener("click", function (event) {
+            event.currentTarget
+                .querySelector(".hidden")
+                .classList.toggle("hidden");
+        });
+</script>
+<div class="container max-w-3xl mx-auto my-10">
+    <div class="flex justify-center items-center">
+        <a
+                href="#"
+                class="inline-flex h-8 w-8 items-center justify-center rounded border"
+        >
+            <span class="sr-only">Previous Page</span>
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3 w-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+            >
+                <path
+                        fill-rule="evenodd"
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                />
+            </svg>
+        </a>
+
+        <div class="text-xs flex border rounded h-8 items-center mx-1 px-1.5">
+            <p>3</p>
+            <span class="mx-1.5">/</span>
+            <p>12</p>
+        </div>
+
+        <a
+                href="#"
+                class="inline-flex h-8 w-8 items-center justify-center rounded border"
+        >
+            <span class="sr-only">Next Page</span>
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3 w-3"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+            >
+                <path
+                        fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd"
+                />
+            </svg>
+        </a>
+    </div>
+</div>
+</body>
+</html>
