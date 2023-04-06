@@ -30,7 +30,7 @@ class UserControllerTest {
     private UserService userService;
 
     @Test
-    void TestSignupForm() throws Exception {
+    void testSignupForm() throws Exception {
         mockMvc.perform(get("/signup"))
                 .andExpect(model().attributeExists("signUpRequest"))
                 .andExpect(view().name("signup"))
