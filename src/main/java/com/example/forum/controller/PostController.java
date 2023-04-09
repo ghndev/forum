@@ -3,7 +3,9 @@ package com.example.forum.controller;
 import com.example.forum.controller.dto.PostCreateRequest;
 import com.example.forum.controller.dto.PostResponse;
 import com.example.forum.domain.Post;
+import com.example.forum.domain.User;
 import com.example.forum.service.PostService;
+import com.example.forum.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
     @GetMapping("/posts")
     public String posts(Model model) {
@@ -49,7 +52,9 @@ public class PostController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
-        postService.createPost(postCreateRequest.toEntity(), currentUserName);
+        User user = userService.findByUsername(currentUserName);
+
+        postService.createPost(postCreateRequest.toEntity(), user);
 
         return "redirect:/posts";
     }

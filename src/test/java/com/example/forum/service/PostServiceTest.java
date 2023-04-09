@@ -1,6 +1,8 @@
 package com.example.forum.service;
 
 import com.example.forum.domain.Post;
+import com.example.forum.domain.Role;
+import com.example.forum.domain.User;
 import com.example.forum.repository.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,13 @@ public class PostServiceTest {
 
     @Test
     void testCreatePost() {
+        User user = User.builder()
+                .email("test@test.com")
+                .username("testUser")
+                .password("password1")
+                .role(Role.USER)
+                .build();
+
         Post post = Post.builder()
                 .title("testTitle")
                 .content("testContent")
@@ -31,7 +40,7 @@ public class PostServiceTest {
 
         when(postRepository.save(any())).thenReturn(post);
 
-        Post savedPost = postService.createPost(post, "testAuthor");
+        Post savedPost = postService.createPost(post, user);
 
         assertThat(post).isEqualTo(savedPost);
     }

@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -24,6 +21,10 @@ public class Post extends BaseTimeEntity{
 
     private int views;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Builder
     public Post(String title, String content, String author, int views) {
         this.title = title;
@@ -34,5 +35,13 @@ public class Post extends BaseTimeEntity{
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public void setUser(User user) {
+        if (this.user != null) {
+            this.user.getPosts().remove(this);
+        }
+        this.user = user;
+        user.getPosts().add(this);
     }
 }

@@ -2,7 +2,9 @@ package com.example.forum.controller;
 
 import com.example.forum.controller.dto.PostCreateRequest;
 import com.example.forum.domain.Post;
+import com.example.forum.domain.Role;
 import com.example.forum.service.PostService;
+import com.example.forum.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,6 +37,9 @@ class PostControllerTest {
 
     @Mock
     private PostService postService;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private PostController postController;
@@ -93,11 +99,21 @@ class PostControllerTest {
 
     @Test
     void testCreatePostWithValidRequest() throws Exception {
+        com.example.forum.domain.User mockUser = com.example.forum.domain.User.builder()
+                .email("test@test.com")
+                .username("testUser")
+                .password("password1")
+                .role(Role.USER)
+                .build();
+
+        when(userService.findByUsername(any(String.class))).thenReturn(mockUser);
+
         PostCreateRequest postCreateRequest = new PostCreateRequest();
         postCreateRequest.setTitle("testTitle");
         postCreateRequest.setContent("testContent");
 
-        when(postService.createPost(any(Post.class), any(String.class))).thenReturn(null);
+        when(postService.createPost(any(Post.class), eq(mockUser)))
+                .thenReturn(null);
 
         mockMvc.perform(post("/posts/create")
                         .flashAttr("postCreateRequest", postCreateRequest))

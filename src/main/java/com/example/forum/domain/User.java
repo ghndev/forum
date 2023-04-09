@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,6 +23,9 @@ public class User extends BaseTimeEntity{
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public User(String email, String username, String password, Role role) {
