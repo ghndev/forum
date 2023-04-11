@@ -2,8 +2,10 @@ package com.example.forum.controller;
 
 import com.example.forum.controller.dto.PostCreateRequest;
 import com.example.forum.controller.dto.PostResponse;
+import com.example.forum.domain.category.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.User;
+import com.example.forum.service.CategoryService;
 import com.example.forum.service.PostService;
 import com.example.forum.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class PostController {
 
     private final PostService postService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @GetMapping("/posts")
     public String posts(Model model) {
@@ -54,7 +57,8 @@ public class PostController {
         String currentUserName = authentication.getName();
         User user = userService.findByUsername(currentUserName);
 
-        postService.createPost(postCreateRequest.toEntity(), user);
+        Category category = categoryService.findByName(postCreateRequest.getCategoryName());
+        postService.createPost(postCreateRequest.toEntity(), user, category);
 
         return "redirect:/posts";
     }

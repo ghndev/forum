@@ -1,10 +1,10 @@
 package com.example.forum.service;
 
+import com.example.forum.domain.category.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.Role;
 import com.example.forum.domain.User;
 import com.example.forum.repository.PostRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,9 +38,13 @@ public class PostServiceTest {
                 .content("testContent")
                 .build();
 
+        Category category = Category.builder()
+                .name("test")
+                .build();
+
         when(postRepository.save(any())).thenReturn(post);
 
-        Post savedPost = postService.createPost(post, user);
+        Post savedPost = postService.createPost(post, user, category);
 
         assertThat(post).isEqualTo(savedPost);
     }

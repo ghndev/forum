@@ -1,5 +1,6 @@
 package com.example.forum.service;
 
+import com.example.forum.domain.category.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.User;
 import com.example.forum.repository.PostRepository;
@@ -16,9 +17,10 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Post createPost(Post post, User user) {
+    public Post createPost(Post post, User user, Category category) {
         post.setAuthor(user.getUsername());
         post.setUser(user);
+        post.setCategory(category);
         return postRepository.save(post);
     }
 

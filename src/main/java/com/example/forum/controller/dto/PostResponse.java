@@ -11,6 +11,7 @@ public class PostResponse {
 
     private Long id;
     private String title;
+    private String categoryName;
     private String content;
     private String author;
 
@@ -22,6 +23,7 @@ public class PostResponse {
         PostResponse postResponse = new PostResponse();
         postResponse.setId(post.getId());
         postResponse.setTitle(post.getTitle());
+        postResponse.setCategoryName(post.getCategory().getDisplayName());
         postResponse.setContent(post.getContent());
         postResponse.setAuthor(post.getAuthor());
         postResponse.setDateTime(post.getCreated());

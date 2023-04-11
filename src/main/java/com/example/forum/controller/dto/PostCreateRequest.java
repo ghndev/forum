@@ -15,6 +15,9 @@ public class PostCreateRequest {
     private String title;
 
     @NotBlank
+    private String categoryName;
+
+    @NotBlank
     private String content;
 
     public Post toEntity() {

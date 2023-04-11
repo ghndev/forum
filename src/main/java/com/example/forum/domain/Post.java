@@ -1,5 +1,6 @@
 package com.example.forum.domain;
 
+import com.example.forum.domain.category.Category;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +26,10 @@ public class Post extends BaseTimeEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @Builder
     public Post(String title, String content, String author, int views) {
         this.title = title;
@@ -43,5 +48,13 @@ public class Post extends BaseTimeEntity{
         }
         this.user = user;
         user.getPosts().add(this);
+    }
+
+    public void setCategory(Category category) {
+        if (this.category != null) {
+            this.category.getPosts().remove(this);
+        }
+        this.category = category;
+        category.getPosts().add(this);
     }
 }

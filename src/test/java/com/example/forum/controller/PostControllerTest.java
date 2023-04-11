@@ -1,8 +1,10 @@
 package com.example.forum.controller;
 
 import com.example.forum.controller.dto.PostCreateRequest;
+import com.example.forum.domain.category.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.Role;
+import com.example.forum.service.CategoryService;
 import com.example.forum.service.PostService;
 import com.example.forum.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +42,9 @@ class PostControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private CategoryService categoryService;
 
     @InjectMocks
     private PostController postController;
@@ -106,13 +111,19 @@ class PostControllerTest {
                 .role(Role.USER)
                 .build();
 
+        Category category = Category.builder()
+                .name("test")
+                .build();
+
         when(userService.findByUsername(any(String.class))).thenReturn(mockUser);
+        when(categoryService.findByName(any(String.class))).thenReturn(category);
 
         PostCreateRequest postCreateRequest = new PostCreateRequest();
         postCreateRequest.setTitle("testTitle");
+        postCreateRequest.setCategoryName("test");
         postCreateRequest.setContent("testContent");
 
-        when(postService.createPost(any(Post.class), eq(mockUser)))
+        when(postService.createPost(any(Post.class), eq(mockUser), eq(category)))
                 .thenReturn(null);
 
         mockMvc.perform(post("/posts/create")
