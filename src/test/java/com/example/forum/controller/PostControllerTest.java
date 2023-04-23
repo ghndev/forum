@@ -1,7 +1,7 @@
 package com.example.forum.controller;
 
 import com.example.forum.controller.dto.PostCreateRequest;
-import com.example.forum.domain.category.Category;
+import com.example.forum.domain.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.Role;
 import com.example.forum.service.CategoryService;

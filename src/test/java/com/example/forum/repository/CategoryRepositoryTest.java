@@ -1,8 +1,6 @@
 package com.example.forum.repository;
 
-import com.example.forum.domain.Role;
-import com.example.forum.domain.User;
-import com.example.forum.domain.category.Category;
+import com.example.forum.domain.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

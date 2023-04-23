@@ -1,4 +1,4 @@
-package com.example.forum.domain.category;
+package com.example.forum.domain;
 
 import com.example.forum.domain.Post;
 import lombok.AccessLevel;

@@ -1,6 +1,6 @@
 package com.example.forum.repository;
 
-import com.example.forum.domain.category.Category;
+import com.example.forum.domain.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

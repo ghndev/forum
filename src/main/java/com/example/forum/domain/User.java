@@ -1,5 +1,8 @@
 package com.example.forum.domain;
 
+import com.example.forum.domain.BaseTimeEntity;
+import com.example.forum.domain.Post;
+import com.example.forum.domain.Role;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseTimeEntity{
+public class User extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

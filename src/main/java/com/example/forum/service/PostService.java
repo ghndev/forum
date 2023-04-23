@@ -1,6 +1,6 @@
 package com.example.forum.service;
 
-import com.example.forum.domain.category.Category;
+import com.example.forum.domain.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.User;
 import com.example.forum.repository.PostRepository;

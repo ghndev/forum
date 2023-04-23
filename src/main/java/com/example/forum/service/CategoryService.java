@@ -1,6 +1,6 @@
 package com.example.forum.service;
 
-import com.example.forum.domain.category.Category;
+import com.example.forum.domain.Category;
 import com.example.forum.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

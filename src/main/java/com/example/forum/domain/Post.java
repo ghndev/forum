@@ -1,6 +1,5 @@
 package com.example.forum.domain;
 
-import com.example.forum.domain.category.Category;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
