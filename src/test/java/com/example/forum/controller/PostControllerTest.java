@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,6 +49,8 @@ class PostControllerTest {
 
     @InjectMocks
     private PostController postController;
+
+    private Category category;
 
     @BeforeEach
     void setUp() {
@@ -70,6 +73,15 @@ class PostControllerTest {
                 .build();
     }
 
+    @BeforeEach
+    void injectCommonMocks() {
+        category = Category.builder()
+                .name("test")
+                .build();
+
+        lenient().when(categoryService.findByName(any(String.class))).thenReturn(category);
+    }
+
     @Test
     void testPosts() throws Exception {
         Post postA = Post.builder()
@@ -83,6 +95,9 @@ class PostControllerTest {
                 .content("testContent")
                 .author("test")
                 .build();
+
+        postA.setCategory(category);
+        postB.setCategory(category);
 
         List<Post> postList = Arrays.asList(postA, postB);
 
@@ -111,12 +126,7 @@ class PostControllerTest {
                 .role(Role.USER)
                 .build();
 
-        Category category = Category.builder()
-                .name("test")
-                .build();
-
         when(userService.findByUsername(any(String.class))).thenReturn(mockUser);
-        when(categoryService.findByName(any(String.class))).thenReturn(category);
 
         PostCreateRequest postCreateRequest = new PostCreateRequest();
         postCreateRequest.setTitle("testTitle");

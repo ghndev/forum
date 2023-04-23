@@ -18,9 +18,9 @@ public class PostService {
 
     @Transactional
     public Post createPost(Post post, User user, Category category) {
-        post.setAuthor(user.getUsername());
         post.setUser(user);
         post.setCategory(category);
+        post.setAuthor(user.getUsername());
         return postRepository.save(post);
     }
 
