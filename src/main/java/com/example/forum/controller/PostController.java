@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -31,8 +32,19 @@ public class PostController {
     private final CategoryService categoryService;
 
     @GetMapping("/posts")
-    public String posts(Model model) {
+    public String getPosts(Model model) {
         List<Post> postList = postService.findAll();
+        List<PostResponse> postResponseList = postList.stream()
+                .map(PostResponse::fromEntity)
+                .collect(Collectors.toList());
+
+        model.addAttribute("postResponseList", postResponseList);
+        return "posts";
+    }
+
+    @GetMapping("/posts/{categoryName}")
+    public String getPostsByCategory(@PathVariable String categoryName, Model model) {
+        List<Post> postList = postService.findPostsByCategoryName(categoryName);
         List<PostResponse> postResponseList = postList.stream()
                 .map(PostResponse::fromEntity)
                 .collect(Collectors.toList());

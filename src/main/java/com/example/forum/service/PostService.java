@@ -3,6 +3,7 @@ package com.example.forum.service;
 import com.example.forum.domain.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.User;
+import com.example.forum.repository.CategoryRepository;
 import com.example.forum.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public Post createPost(Post post, User user, Category category) {
@@ -26,5 +28,13 @@ public class PostService {
 
     public List<Post> findAll() {
         return postRepository.findAll();
+    }
+
+    public List<Post> findPostsByCategoryName(String categoryName) {
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + categoryName));
+
+        return postRepository.findByCategory(category)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

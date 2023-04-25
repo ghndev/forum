@@ -42,10 +42,10 @@
             <a href="/posts"
                th:classappend="${#httpServletRequest.getRequestURI() == '/posts' ? 'text-blue-500' : 'text-gray-500'}"
                class="hover:text-blue-500">전체</a>
-            <a href="/posts/daliy"
+            <a href="/posts/daily"
                th:classappend="${#httpServletRequest.getRequestURI() == '/posts/daily' ? 'text-blue-500' : 'text-gray-500'}"
                class="mx-2 hover:text-blue-500">일상</a>
-            <a href="/qna"
+            <a href="/posts/qna"
                th:classappend="${#httpServletRequest.getRequestURI() == '/posts/qna' ? 'text-blue-500' : 'text-gray-500'}"
                class="hover:text-blue-500">Q&A</a>
         </div>
