@@ -13,6 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -101,7 +104,9 @@ class PostControllerTest {
 
         List<Post> postList = Arrays.asList(postA, postB);
 
-        when(postService.findAll()).thenReturn(postList);
+        Page<Post> postPage = new PageImpl<>(postList);
+
+        when(postService.findAll(any(Pageable.class))).thenReturn(postPage);
 
         mockMvc.perform(get("/posts"))
                 .andExpect(model().attributeExists("postResponseList"))

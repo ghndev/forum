@@ -6,6 +6,8 @@ import com.example.forum.domain.User;
 import com.example.forum.repository.CategoryRepository;
 import com.example.forum.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +28,15 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public Page<Post> findAll(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
-    public List<Post> findPostsByCategoryName(String categoryName) {
+    public Page<Post> findPostsByCategoryName(String categoryName, Pageable pageable) {
         Category category = categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found: " + categoryName));
 
-        return postRepository.findByCategory(category)
+        return postRepository.findByCategory(category, pageable)
                 .orElseThrow(IllegalArgumentException::new);
     }
 }

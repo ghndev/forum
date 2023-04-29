@@ -31,7 +31,6 @@ public class SecurityConfig {
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
                 .failureUrl("/login?failed");
 
         return http.build();

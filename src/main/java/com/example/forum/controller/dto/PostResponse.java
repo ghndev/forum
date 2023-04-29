@@ -26,7 +26,7 @@ public class PostResponse {
         postResponse.setCategoryName(post.getCategory().getDisplayName());
         postResponse.setContent(post.getContent());
         postResponse.setAuthor(post.getAuthor());
-        postResponse.setDateTime(post.getCreated());
+        postResponse.setDateTime(post.getCreatedDate());
 
         return postResponse;
     }

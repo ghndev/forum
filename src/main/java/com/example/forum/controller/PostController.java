@@ -9,6 +9,10 @@ import com.example.forum.service.CategoryService;
 import com.example.forum.service.PostService;
 import com.example.forum.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,9 +24,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Controller
 @RequiredArgsConstructor
 public class PostController {
@@ -32,24 +33,21 @@ public class PostController {
     private final CategoryService categoryService;
 
     @GetMapping("/posts")
-    public String getPosts(Model model) {
-        List<Post> postList = postService.findAll();
-        List<PostResponse> postResponseList = postList.stream()
-                .map(PostResponse::fromEntity)
-                .collect(Collectors.toList());
+    public String getPosts(Model model, @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Post> postPage = postService.findAll(pageable);
+        Page<PostResponse> postResponsePage = postPage.map(PostResponse::fromEntity);
 
-        model.addAttribute("postResponseList", postResponseList);
+        model.addAttribute("postResponsePage", postResponsePage);
         return "posts";
     }
 
     @GetMapping("/posts/{categoryName}")
-    public String getPostsByCategory(@PathVariable String categoryName, Model model) {
-        List<Post> postList = postService.findPostsByCategoryName(categoryName);
-        List<PostResponse> postResponseList = postList.stream()
-                .map(PostResponse::fromEntity)
-                .collect(Collectors.toList());
+    public String getPostsByCategory(Model model, @PathVariable String categoryName,
+                                     @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC)Pageable pageable) {
+        Page<Post> postPage = postService.findPostsByCategoryName(categoryName, pageable);
+        Page<PostResponse> postResponsePage = postPage.map(PostResponse::fromEntity);
 
-        model.addAttribute("postResponseList", postResponseList);
+        model.addAttribute("postResponsePage", postResponsePage);
         return "posts";
     }
 
