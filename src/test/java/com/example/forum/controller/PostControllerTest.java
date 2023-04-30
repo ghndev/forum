@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,8 +30,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -72,6 +72,7 @@ class PostControllerTest {
         viewResolver.setSuffix(".html");
 
         mockMvc = MockMvcBuilders.standaloneSetup(postController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setViewResolvers(viewResolver)
                 .build();
     }
@@ -79,14 +80,14 @@ class PostControllerTest {
     @BeforeEach
     void injectCommonMocks() {
         category = Category.builder()
-                .name("test")
+                .name("testCategory")
                 .build();
 
         lenient().when(categoryService.findByName(any(String.class))).thenReturn(category);
     }
 
     @Test
-    void testPosts() throws Exception {
+    void testGetPosts() throws Exception {
         Post postA = Post.builder()
                 .title("testTitle")
                 .content("testContent")
@@ -109,9 +110,37 @@ class PostControllerTest {
         when(postService.findAll(any(Pageable.class))).thenReturn(postPage);
 
         mockMvc.perform(get("/posts"))
-                .andExpect(model().attributeExists("postResponseList"))
+                .andExpect(model().attributeExists("postResponsePage"))
                 .andExpect(view().name("posts"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testGetPostsByCategory() throws Exception {
+        Post postA = Post.builder()
+                .title("testTitle")
+                .content("testContent")
+                .author("test")
+                .build();
+
+        Post postB = Post.builder()
+                .title("testTitle")
+                .content("testContent")
+                .author("test")
+                .build();
+
+        postA.setCategory(category);
+        postB.setCategory(category);
+
+        List<Post> posts = Arrays.asList(postA, postB);
+        Page<Post> postPage = new PageImpl<>(posts);
+
+        when(postService.findPostsByCategoryName(anyString(), any(Pageable.class))).thenReturn(postPage);
+
+        mockMvc.perform(get("/posts/{categoryName}", "testCategory"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("postResponsePage"))
+                .andExpect(view().name("posts"));
     }
 
     @Test
