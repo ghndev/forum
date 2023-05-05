@@ -37,4 +37,8 @@ public class PostService {
         return postRepository.findByCategory(category, pageable)
                 .orElseThrow(IllegalArgumentException::new);
     }
+
+    public Page<Post> searchPosts(String keyword, Pageable pageable) {
+        return postRepository.findByTitleContaining(keyword, pageable);
+    }
 }

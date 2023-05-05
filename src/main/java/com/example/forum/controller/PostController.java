@@ -19,10 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,9 +38,20 @@ public class PostController {
         return "posts";
     }
 
+    @GetMapping("/posts/search")
+    public String searchPosts(Model model, @RequestParam("keyword") String keyword,
+                              @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Post> postPage = postService.searchPosts(keyword, pageable);
+        Page<PostResponse> postResponsePage = postPage.map(PostResponse::fromEntity);
+
+        model.addAttribute("postResponsePage", postResponsePage);
+        model.addAttribute("keyword", keyword);
+        return "posts";
+    }
+
     @GetMapping("/posts/{categoryName}")
     public String getPostsByCategory(Model model, @PathVariable String categoryName,
-                                     @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC)Pageable pageable) {
+                                     @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Post> postPage = postService.findPostsByCategoryName(categoryName, pageable);
         Page<PostResponse> postResponsePage = postPage.map(PostResponse::fromEntity);
 
