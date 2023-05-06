@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
@@ -114,5 +115,27 @@ public class PostServiceTest {
         assertThat(2).isEqualTo(result.getContent().size());
         assertThat("testTitleA").isEqualTo(result.getContent().get(0).getTitle());
         assertThat("testTitleB").isEqualTo(result.getContent().get(1).getTitle());
+    }
+
+    @Test
+    void testSearchPosts() {
+        Post postA = Post.builder()
+                .title("testA")
+                .build();
+
+        Post postB = Post.builder()
+                .title("testB")
+                .build();
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Post> expectedPage = new PageImpl<>(Arrays.asList(postA, postB), pageable, 2);
+
+        when(postRepository.findByTitleContaining(anyString(), any(Pageable.class)))
+                .thenReturn(expectedPage);
+
+        String keyword = "test";
+        Page<Post> actualPage = postService.searchPosts(keyword, pageable);
+
+        assertThat(expectedPage).isEqualTo(actualPage);
     }
 }

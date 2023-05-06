@@ -22,8 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -159,5 +158,37 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("post-create"));
 
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = "USER")
+    void testSearchPosts() throws Exception {
+        String keyword = "test";
+        Post postA = Post.builder()
+                .title("testTitle")
+                .content("testContent")
+                .build();
+
+        Post postB = Post.builder()
+                .title("testTitle")
+                .content("testContent")
+                .build();
+
+        postA.setCategory(category);
+        postB.setCategory(category);
+
+        List<Post> postList = Arrays.asList(postA, postB);
+        Page<Post> postPage = new PageImpl<>(postList);
+
+        when(postService.searchPosts(eq(keyword), any(Pageable.class))).thenReturn(postPage);
+
+        mockMvc.perform(get("/posts/search")
+                        .param("keyword", keyword))
+                .andExpect(model().attributeExists("postResponsePage"))
+                .andExpect(model().attribute("keyword", keyword))
+                .andExpect(view().name("posts"))
+                .andExpect(status().isOk());
+
+        verify(postService, times(1)).searchPosts(eq(keyword), any(Pageable.class));
     }
 }
