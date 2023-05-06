@@ -15,7 +15,7 @@ public class PostResponse {
     private String content;
     private String author;
 
-    private LocalDateTime dateTime;
+    private LocalDateTime createdDate;
 
     private int views;
 
@@ -26,7 +26,7 @@ public class PostResponse {
         postResponse.setCategoryName(post.getCategory().getDisplayName());
         postResponse.setContent(post.getContent());
         postResponse.setAuthor(post.getAuthor());
-        postResponse.setDateTime(post.getCreatedDate());
+        postResponse.setCreatedDate(post.getCreatedDate());
 
         return postResponse;
     }

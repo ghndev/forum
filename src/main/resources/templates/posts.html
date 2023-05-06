@@ -148,7 +148,7 @@
                 </td>
                 <td th:text="${post.author}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 </td>
-                <td th:text="${post.dateTime.toString().substring(0,10)}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td th:text="${post.createdDate == null ? '' : post.createdDate.toString().substring(0,10)}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 </td>
                 <td th:text="${post.views}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 </td>

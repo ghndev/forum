@@ -9,23 +9,14 @@ import com.example.forum.service.PostService;
 import com.example.forum.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,49 +24,27 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = PostController.class)
 class PostControllerTest {
+
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private PostService postService;
 
-    @Mock
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private CategoryService categoryService;
 
-    @InjectMocks
-    private PostController postController;
-
     private Category category;
-
-    @BeforeEach
-    void setUp() {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        UserDetails userDetails = User.withUsername("testUser")
-                .password(passwordEncoder.encode("password1"))
-                .roles("USER")
-                .build();
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setPrefix("classpath:templates/");
-        viewResolver.setSuffix(".html");
-
-        mockMvc = MockMvcBuilders.standaloneSetup(postController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setViewResolvers(viewResolver)
-                .build();
-    }
 
     @BeforeEach
     void injectCommonMocks() {
@@ -87,17 +56,16 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void testGetPosts() throws Exception {
         Post postA = Post.builder()
                 .title("testTitle")
                 .content("testContent")
-                .author("test")
                 .build();
 
         Post postB = Post.builder()
                 .title("testTitle")
                 .content("testContent")
-                .author("test")
                 .build();
 
         postA.setCategory(category);
@@ -116,17 +84,16 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void testGetPostsByCategory() throws Exception {
         Post postA = Post.builder()
                 .title("testTitle")
                 .content("testContent")
-                .author("test")
                 .build();
 
         Post postB = Post.builder()
                 .title("testTitle")
                 .content("testContent")
-                .author("test")
                 .build();
 
         postA.setCategory(category);
@@ -144,6 +111,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void testCreateForm() throws Exception {
         mockMvc.perform(get("/posts/create"))
                 .andExpect(status().isOk())
@@ -152,6 +120,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void testCreatePostWithValidRequest() throws Exception {
         com.example.forum.domain.User mockUser = com.example.forum.domain.User.builder()
                 .email("test@test.com")
@@ -171,20 +140,24 @@ class PostControllerTest {
                 .thenReturn(null);
 
         mockMvc.perform(post("/posts/create")
+                        .with(csrf())
                         .flashAttr("postCreateRequest", postCreateRequest))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/posts"));
     }
 
     @Test
+    @WithMockUser(username = "testUser", roles = "USER")
     void testCreatePostWithInvalidRequest() throws Exception {
         PostCreateRequest postCreateRequest = new PostCreateRequest();
         postCreateRequest.setTitle("");
         postCreateRequest.setContent("");
 
         mockMvc.perform(post("/posts/create")
+                        .with(csrf())
                         .flashAttr("postCreateRequest", postCreateRequest))
                 .andExpect(status().isOk())
                 .andExpect(view().name("post-create"));
+
     }
 }
