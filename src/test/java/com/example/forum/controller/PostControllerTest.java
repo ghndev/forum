@@ -1,9 +1,11 @@
 package com.example.forum.controller;
 
 import com.example.forum.controller.dto.PostCreateRequest;
+import com.example.forum.controller.dto.PostResponse;
 import com.example.forum.domain.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.Role;
+import com.example.forum.repository.PostRepository;
 import com.example.forum.service.CategoryService;
 import com.example.forum.service.PostService;
 import com.example.forum.service.UserService;
@@ -190,5 +192,25 @@ class PostControllerTest {
                 .andExpect(status().isOk());
 
         verify(postService, times(1)).searchPosts(eq(keyword), any(Pageable.class));
+    }
+
+    @Test
+    @WithMockUser(username = "testUser", roles = "USER")
+    void testViewPost() throws Exception {
+        Post post = Post.builder()
+                .title("testTitle")
+                .content("testContent")
+                .build();
+
+        post.setCategory(category);
+
+        Long postId = 1L;
+
+        when(postService.findById(postId)).thenReturn(post);
+
+        mockMvc.perform(get("/posts/" + postId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("post-detail"))
+                .andExpect(model().attributeExists("postResponse"));
     }
 }
