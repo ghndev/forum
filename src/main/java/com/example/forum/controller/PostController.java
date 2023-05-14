@@ -30,30 +30,30 @@ public class PostController {
     private final CategoryService categoryService;
 
     @GetMapping("/posts")
-    public String getPosts(Model model, @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String getPosts(@SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         Page<Post> postPage = postService.findAll(pageable);
-        Page<PostResponse> postResponsePage = postPage.map(PostResponse::fromEntity);
+        Page<PostResponse> postResponsePage = toPostResponsePage(postPage);
 
         model.addAttribute("postResponsePage", postResponsePage);
         return "posts";
     }
 
     @GetMapping("/posts/search")
-    public String searchPosts(Model model, @RequestParam("keyword") String keyword,
-                              @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String searchPosts(@RequestParam("keyword") String keyword,
+                              @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         Page<Post> postPage = postService.searchPosts(keyword, pageable);
-        Page<PostResponse> postResponsePage = postPage.map(PostResponse::fromEntity);
+        Page<PostResponse> postResponsePage = toPostResponsePage(postPage);
 
         model.addAttribute("postResponsePage", postResponsePage);
         model.addAttribute("keyword", keyword);
         return "posts";
     }
 
-    @GetMapping("/posts/{categoryName}")
-    public String getPostsByCategory(Model model, @PathVariable String categoryName,
-                                     @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+    @GetMapping("/posts/category/{categoryName}")
+    public String getPostsByCategory(@PathVariable String categoryName,
+                                     @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         Page<Post> postPage = postService.findPostsByCategoryName(categoryName, pageable);
-        Page<PostResponse> postResponsePage = postPage.map(PostResponse::fromEntity);
+        Page<PostResponse> postResponsePage = toPostResponsePage(postPage);
 
         model.addAttribute("postResponsePage", postResponsePage);
         return "posts";
@@ -79,5 +79,18 @@ public class PostController {
         postService.createPost(postCreateRequest.toEntity(), user, category);
 
         return "redirect:/posts";
+    }
+
+    @GetMapping("/posts/{postId}")
+    public String viewPost(@PathVariable Long postId, Model model) {
+        Post post = postService.findById(postId);
+        PostResponse postResponse = PostResponse.fromEntity(post);
+
+        model.addAttribute("postResponse", postResponse);
+        return "post-detail";
+    }
+
+    private Page<PostResponse> toPostResponsePage(Page<Post> postPage) {
+        return postPage.map(PostResponse::fromEntity);
     }
 }

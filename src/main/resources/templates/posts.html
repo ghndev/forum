@@ -47,10 +47,10 @@
                th:classappend="${#httpServletRequest.getRequestURI() == '/posts' ? 'text-blue-500' : 'text-gray-500'}"
                class="hover:text-blue-500">전체</a>
             <a href="/posts/daily"
-               th:classappend="${#httpServletRequest.getRequestURI() == '/posts/daily' ? 'text-blue-500' : 'text-gray-500'}"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/posts/category/daily' ? 'text-blue-500' : 'text-gray-500'}"
                class="mx-2 hover:text-blue-500">일상</a>
             <a href="/posts/qna"
-               th:classappend="${#httpServletRequest.getRequestURI() == '/posts/qna' ? 'text-blue-500' : 'text-gray-500'}"
+               th:classappend="${#httpServletRequest.getRequestURI() == '/posts/category/qna' ? 'text-blue-500' : 'text-gray-500'}"
                class="hover:text-blue-500">Q&A</a>
         </div>
 
@@ -139,10 +139,11 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
             <tr th:each="post : ${postResponsePage}">
-                <td
-                        th:text="${post.title}"
-                        class="px-6 py-4 w-[12rem] inline-block text-ellipsis overflow-hidden whitespace-nowrap text-sm text-blue-500 underline cursor-pointer"
-                >
+                <td>
+                    <a th:href="@{/posts/__${post.getId()}__}" th:text="${post.title}"
+                       class="px-6 py-4 w-[12rem] inline-block text-ellipsis overflow-hidden whitespace-nowrap text-sm text-blue-500 underline cursor-pointer"
+                    >
+                    </a>
                 </td>
                 <td th:text="${post.categoryName}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 </td>
@@ -160,15 +161,6 @@
         </table>
     </div>
 </div>
-<script>
-    document
-        .querySelector(".relative")
-        .addEventListener("click", function (event) {
-            event.currentTarget
-                .querySelector(".hidden")
-                .classList.toggle("hidden");
-        });
-</script>
 <div class="container max-w-3xl mx-auto my-10">
     <div class="flex justify-center items-center">
         <a

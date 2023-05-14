@@ -30,6 +30,11 @@ public class PostService {
         return postRepository.findAll(pageable);
     }
 
+    public Post findById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found: " + id));
+    }
+
     public Page<Post> findPostsByCategoryName(String categoryName, Pageable pageable) {
         Category category = categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found: " + categoryName));
