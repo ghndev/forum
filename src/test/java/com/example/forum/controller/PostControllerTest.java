@@ -1,11 +1,9 @@
 package com.example.forum.controller;
 
 import com.example.forum.controller.dto.PostCreateRequest;
-import com.example.forum.controller.dto.PostResponse;
 import com.example.forum.domain.Category;
 import com.example.forum.domain.Post;
 import com.example.forum.domain.Role;
-import com.example.forum.repository.PostRepository;
 import com.example.forum.service.CategoryService;
 import com.example.forum.service.PostService;
 import com.example.forum.service.UserService;

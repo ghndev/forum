@@ -14,10 +14,8 @@ public class PostResponse {
     private String categoryName;
     private String content;
     private String author;
-
     private LocalDateTime createdDate;
-
-    private int views;
+    private int viewCount;
 
     public static PostResponse fromEntity(Post post) {
         PostResponse postResponse = new PostResponse();
@@ -27,6 +25,7 @@ public class PostResponse {
         postResponse.setContent(post.getContent());
         postResponse.setAuthor(post.getAuthor());
         postResponse.setCreatedDate(post.getCreatedDate());
+        postResponse.setViewCount(post.getViewCount());
 
         return postResponse;
     }

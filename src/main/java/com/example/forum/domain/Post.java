@@ -20,7 +20,7 @@ public class Post extends BaseTimeEntity {
     private String content;
     private String author;
 
-    private int views;
+    private int viewCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -31,11 +31,10 @@ public class Post extends BaseTimeEntity {
     private Category category;
 
     @Builder
-    public Post(String title, String content, int views) {
+    public Post(String title, String content, int viewCount) {
         this.title = title;
         this.content = content;
-        this.author = author;
-        this.views = views;
+        this.viewCount = viewCount;
     }
 
     public void setAuthor(String author) {
@@ -56,5 +55,9 @@ public class Post extends BaseTimeEntity {
         }
         this.category = category;
         category.getPosts().add(this);
+    }
+
+    public void increaseViewCount() {
+        this.viewCount += 1;
     }
 }

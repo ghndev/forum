@@ -21,6 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 @RequiredArgsConstructor
 public class PostController {
@@ -76,14 +79,14 @@ public class PostController {
         User user = userService.findByUsername(currentUserName);
 
         Category category = categoryService.findByName(postCreateRequest.getCategoryName());
-        postService.createPost(postCreateRequest.toEntity(), user, category);
+        Post post = postService.createPost(postCreateRequest.toEntity(), user, category);
 
-        return "redirect:/posts";
+        return "redirect:/posts/" + post.getId();
     }
 
     @GetMapping("/posts/{postId}")
-    public String viewPost(@PathVariable Long postId, Model model) {
-        Post post = postService.findById(postId);
+    public String viewPost(@PathVariable Long postId, HttpServletRequest request, HttpServletResponse response, Model model) {
+        Post post = postService.increasePostViewCount(postId, request, response);
         PostResponse postResponse = PostResponse.fromEntity(post);
 
         model.addAttribute("postResponse", postResponse);

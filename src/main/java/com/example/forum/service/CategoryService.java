@@ -5,6 +5,8 @@ import com.example.forum.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -13,6 +15,6 @@ public class CategoryService {
 
     public Category findByName(String name) {
         return categoryRepository.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + name));
+                .orElseThrow(() -> new NoSuchElementException("Category not found: " + name));
     }
 }
