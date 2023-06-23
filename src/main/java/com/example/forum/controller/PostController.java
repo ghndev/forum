@@ -21,9 +21,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @Controller
 @RequiredArgsConstructor
 public class PostController {
@@ -85,8 +82,9 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}")
-    public String viewPost(@PathVariable Long postId, HttpServletRequest request, HttpServletResponse response, Model model) {
-        Post post = postService.increasePostViewCount(postId, request, response);
+    public String viewPost(@PathVariable Long postId, Model model) {
+        Post post = postService.findById(postId);
+
         PostResponse postResponse = PostResponse.fromEntity(post);
 
         model.addAttribute("postResponse", postResponse);

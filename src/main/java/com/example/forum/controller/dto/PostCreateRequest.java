@@ -10,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 @Getter @Setter
 public class PostCreateRequest {
 
+    private Long id;
+
     @NotBlank
     @Length(min = 1, max = 20)
     private String title;
@@ -22,6 +24,7 @@ public class PostCreateRequest {
 
     public Post toEntity() {
         return Post.builder()
+                .id(this.id)
                 .title(this.title)
                 .content(this.content)
                 .build();

@@ -24,7 +24,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
@@ -108,7 +108,7 @@ public class PostServiceTest {
         Page<Post> postPage = new PageImpl<>(posts);
 
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
-        when(postRepository.findByCategory(any(Category.class), any(Pageable.class))).thenReturn(Optional.of(postPage));
+        when(postRepository.findByCategory(any(Category.class), any(Pageable.class))).thenReturn(postPage);
 
         Page<Post> result = postService.findPostsByCategoryName("testCategory", Pageable.unpaged());
 
@@ -137,5 +137,18 @@ public class PostServiceTest {
         Page<Post> actualPage = postService.searchPosts(keyword, pageable);
 
         assertThat(expectedPage).isEqualTo(actualPage);
+    }
+
+    @Test
+    void testIncreasePostViewCount() {
+        Long postId = 1L;
+        Post post = Post.builder()
+                .build();
+
+        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
+
+        postService.increasePostViewCount(postId);
+
+        assertThat(post.getViewCount()).isEqualTo(1);
     }
 }

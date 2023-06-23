@@ -55,7 +55,7 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = "USER")
+    @WithMockUser
     void testGetPosts() throws Exception {
         Post postA = Post.builder()
                 .title("testTitle")
@@ -83,7 +83,7 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = "USER")
+    @WithMockUser
     void testGetPostsByCategory() throws Exception {
         Post postA = Post.builder()
                 .title("testTitle")
@@ -103,14 +103,14 @@ class PostControllerTest {
 
         when(postService.findPostsByCategoryName(anyString(), any(Pageable.class))).thenReturn(postPage);
 
-        mockMvc.perform(get("/posts/{categoryName}", "testCategory"))
+        mockMvc.perform(get("/posts/category/{categoryName}", category.getName()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("postResponsePage"))
                 .andExpect(view().name("posts"));
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = "USER")
+    @WithMockUser
     void testCreateForm() throws Exception {
         mockMvc.perform(get("/posts/create"))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = "USER")
+    @WithMockUser
     void testCreatePostWithValidRequest() throws Exception {
         com.example.forum.domain.User mockUser = com.example.forum.domain.User.builder()
                 .email("test@test.com")
@@ -131,22 +131,24 @@ class PostControllerTest {
         when(userService.findByUsername(any(String.class))).thenReturn(mockUser);
 
         PostCreateRequest postCreateRequest = new PostCreateRequest();
+        postCreateRequest.setId(1L);
         postCreateRequest.setTitle("testTitle");
         postCreateRequest.setCategoryName("test");
         postCreateRequest.setContent("testContent");
+        Post post = postCreateRequest.toEntity();
 
         when(postService.createPost(any(Post.class), eq(mockUser), eq(category)))
-                .thenReturn(null);
+                .thenReturn(post);
 
         mockMvc.perform(post("/posts/create")
                         .with(csrf())
                         .flashAttr("postCreateRequest", postCreateRequest))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/posts"));
+                .andExpect(redirectedUrl("/posts/" + 1L));
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = "USER")
+    @WithMockUser
     void testCreatePostWithInvalidRequest() throws Exception {
         PostCreateRequest postCreateRequest = new PostCreateRequest();
         postCreateRequest.setTitle("");
@@ -161,7 +163,7 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = "USER")
+    @WithMockUser
     void testSearchPosts() throws Exception {
         String keyword = "test";
         Post postA = Post.builder()
@@ -193,7 +195,7 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = "USER")
+    @WithMockUser
     void testViewPost() throws Exception {
         Post post = Post.builder()
                 .title("testTitle")
@@ -210,5 +212,21 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("post-detail"))
                 .andExpect(model().attributeExists("postResponse"));
+    }
+
+    @Test
+    @WithMockUser
+    public void viewPostTest() throws Exception {
+        Long postId = 1L;
+        Post post = Post.builder()
+                .build();
+
+        post.setCategory(category);
+
+        when(postService.findById(postId)).thenReturn(post);
+
+        mockMvc.perform(get("/posts/{postId}", postId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("post-detail"));
     }
 }

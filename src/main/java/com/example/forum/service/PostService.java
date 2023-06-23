@@ -44,8 +44,7 @@ public class PostService {
         Category category = categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new NoSuchElementException("Category not found: " + categoryName));
 
-        return postRepository.findByCategory(category, pageable)
-                .orElseThrow(NoSuchElementException::new);
+        return postRepository.findByCategory(category, pageable);
     }
 
     public Page<Post> searchPosts(String keyword, Pageable pageable) {
@@ -53,37 +52,9 @@ public class PostService {
     }
 
     @Transactional
-    public Post increasePostViewCount(Long postId, HttpServletRequest request, HttpServletResponse response) {
+    public void increasePostViewCount(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NoSuchElementException("Post not found with id: " + postId));
-
-        Cookie oldCookie = null;
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("pv")) {
-                    oldCookie = cookie;
-                }
-            }
-        }
-
-        if (oldCookie != null) {
-            if (!oldCookie.getValue().contains("[" + postId + "]")) {
-                post.increaseViewCount();
-                oldCookie.setValue(oldCookie.getValue() + "_[" + postId + "]");
-                oldCookie.setPath("/");
-                oldCookie.setMaxAge(60 * 60 * 24);
-                response.addCookie(oldCookie);
-            }
-        } else {
-            post.increaseViewCount();
-            Cookie newCookie = new Cookie("pv","[" + postId + "]");
-            newCookie.setPath("/");
-            newCookie.setMaxAge(60 * 60 * 24);
-            response.addCookie(newCookie);
-        }
-
-        return post;
+        post.increaseViewCount();
     }
 }
